@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rock Paper Scissors 3D</title>
+    <meta name="description" content="Play Rock, Paper, Scissors in a live 3D arena with synth music. First to 10 points wins." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/",
+          "jss": "https://cdn.jsdelivr.net/npm/jss@10.10.0/+esm",
+          "jss-preset-default": "https://cdn.jsdelivr.net/npm/jss-preset-default@10.10.0/+esm"
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <a class="visually-hidden-focusable" href="#main">Skip to game</a>
+
+    <main class="container px-3 py-3 py-lg-4" id="main">
+      <header class="row align-items-end g-3 mb-3">
+        <div class="col-12 col-md-7">
+          <p class="eyebrow mb-0" data-jss="eyebrow">Live 3D arena &middot; First to 10 wins</p>
+          <h1 class="title" data-jss="title">Rock, Paper, Scissors</h1>
+        </div>
+        <div class="col-12 col-md-5">
+          <div class="row g-2 text-center">
+            <div class="col-4">
+              <div class="score-card" data-jss="scoreCard">
+                <span data-jss="scoreLabel">You</span>
+                <span id="player-score" data-jss="scoreValue">0</span>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="score-card" data-jss="scoreCard">
+                <span data-jss="scoreLabel">Round</span>
+                <span id="round-number" data-jss="scoreValue">0</span>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="score-card" data-jss="scoreCard">
+                <span data-jss="scoreLabel">Computer</span>
+                <span id="computer-score" data-jss="scoreValue">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="row g-3">
+        <!-- Left: arena, result, then the controls. Controls sit directly under the arena so phone players never scroll to reach them. -->
+        <section class="col-12 col-lg-8" aria-label="Game arena">
+          <div class="stage" id="stage" data-jss="stageCard">
+            <div class="timer-badge" id="timer-text" aria-live="polite" data-jss="timerBadge">Ready</div>
+            <div class="stage-labels" data-jss="stageLabels" aria-hidden="true">
+              <span>You</span>
+              <span>Computer</span>
+            </div>
+            <div class="d-none" id="webgl-fallback" data-jss="webglFallback">
+              3D view is not available on this device or browser. You can still play with the move cards below.
+            </div>
+          </div>
+
+          <p class="result-line" id="result-text" aria-live="polite" data-jss="resultLine"></p>
+
+          <div class="controls" data-jss="controls">
+            <button id="start-button" type="button" data-jss="primaryBtn">Start match</button>
+            <div class="row g-2 g-md-3" role="group" aria-label="Choose your move">
+              <div class="col-4">
+                <button type="button" class="w-100" data-jss="choiceBtn" data-choice="rock" aria-pressed="false">
+                  <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M14 40c-5-8 2-22 12-24 6-1 8-5 16-3 10 2 14 12 12 22-1 9-6 14-16 15-8 1-11-2-18-4-4-1-6-3-6-6z" />
+                  </svg>
+                  <span data-jss="choiceName">Rock</span>
+                  <small data-jss="choiceKey">Key 1 or R</small>
+                </button>
+              </div>
+              <div class="col-4">
+                <button type="button" class="w-100" data-jss="choiceBtn" data-choice="paper" aria-pressed="false">
+                  <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M18 8h22l8 8v40H18z" />
+                    <path d="M40 8v8h8" />
+                    <path d="M24 30h20M24 38h20M24 46h14" />
+                  </svg>
+                  <span data-jss="choiceName">Paper</span>
+                  <small data-jss="choiceKey">Key 2 or P</small>
+                </button>
+              </div>
+              <div class="col-4">
+                <button type="button" class="w-100" data-jss="choiceBtn" data-choice="scissors" aria-pressed="false">
+                  <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="18" cy="46" r="8" />
+                    <circle cx="46" cy="46" r="8" />
+                    <path d="M24 40 50 8M40 40 14 8" />
+                  </svg>
+                  <span data-jss="choiceName">Scissors</span>
+                  <small data-jss="choiceKey">Key 3 or S</small>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Right: status, sound and round log -->
+        <aside class="col-12 col-lg-4">
+          <div class="panel" data-jss="panel">
+            <div class="d-flex justify-content-between align-items-center gap-2">
+              <h2 class="panel-title" data-jss="panelTitle">Match</h2>
+              <button id="sound-toggle" type="button" aria-pressed="true" data-jss="chipBtn">Sound on</button>
+            </div>
+            <p class="status-text" id="status-text" data-jss="statusText">
+              Pick a move, then start the match. Drag the arena to orbit the camera.
+            </p>
+            <h3 class="panel-title mt-2" data-jss="panelTitle">Round log</h3>
+            <ol class="history" id="history" data-jss="history"></ol>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <div class="modal fade" id="match-modal" tabindex="-1" aria-labelledby="match-title" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" data-jss="modalCard">
+          <div class="modal-body text-center p-4">
+            <h2 class="panel-title" id="match-title" data-jss="panelTitle"></h2>
+            <p class="status-text mb-3" id="match-text" data-jss="statusText"></p>
+            <button type="button" id="play-again" data-jss="primaryBtn" data-bs-dismiss="modal">Play again</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
